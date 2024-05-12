@@ -4,7 +4,7 @@
 # <xbar.title>Timetable</xbar.title>
 # <xbar.version>v0.1</xbar.version>
 # <xbar.author>Cabin Zhu</xbar.author>
-# <xbar.author.github></xbar.author.github>
+# <xbar.author.github>cabinz</xbar.author.github>
 # <xbar.desc>Display the current event from a given daily timetable.</xbar.desc>
 # <xbar.image></xbar.image>
 # <xbar.dependencies>python</xbar.dependencies>

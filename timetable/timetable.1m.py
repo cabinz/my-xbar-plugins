@@ -2,7 +2,7 @@
 
 # xbar meta
 # <xbar.title>Timetable</xbar.title>
-# <xbar.version>v0.1</xbar.version>
+# <xbar.version>v1.0</xbar.version>
 # <xbar.author>Cabin Zhu</xbar.author>
 # <xbar.author.github>cabinz</xbar.author.github>
 # <xbar.desc>Display the current event from a given daily timetable. Make sure to configure the path to your CSV timetable file as the global variable CSV_TIMETAB.</xbar.desc>

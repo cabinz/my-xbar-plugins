@@ -51,16 +51,19 @@ class Event:
         return self.m_start_time > self.m_end_time
     
     def minutes_left(self, m_time: int) -> int:
-        if not self.spans_midnight():
-            return event.m_end_time - cur_m_time
+        if self.spans_midnight():
+            if m_time >= self.m_start_time:
+                return to_m_time("24:00") - m_time + self.m_end_time
+            else:
+                return self.m_end_time - m_time
         else:
-            return to_m_time("24:00") - cur_m_time + event.m_end_time
+            return self.m_end_time - m_time
         
     def is_ongoing(self, m_time: int) -> bool:
         if self.spans_midnight():
-            if cur_m_time >= self.m_start_time or cur_m_time < self.m_end_time:
+            if m_time >= self.m_start_time or m_time < self.m_end_time:
                 return True
-        elif self.m_start_time <= cur_m_time < self.m_end_time:
+        elif self.m_start_time <= m_time < self.m_end_time:
             return True
         return False
         
@@ -100,12 +103,11 @@ if __name__ == "__main__":
     cur_m_time = to_m_time(cur_time)
     
     idx_found = locate_event(cur_m_time, table)
-    event_found = (idx_found != -1)
-    if event_found:
+    if idx_found != -1: # display the first-hit ongoing event as title
         event = table[idx_found]
+        print(f'{event} ({event.time_left(cur_m_time)} left)')
         # print(f'{event} | dropdown=False')
         # print(f'{event.time_left(cur_m_time)} left')
-        print(f'{event} ({event.time_left(cur_m_time)} left)')
     else:
         print("no event")
     

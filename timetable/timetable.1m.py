@@ -12,7 +12,7 @@
 import datetime
 import csv
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union
 
 # Each line in the format "Begin_Time,End_Time,Event_Name"
 #
@@ -21,7 +21,7 @@ from typing import List
 # 07:30,08:30,breakfast
 # 08:30,10:00,gym
 # ...
-CSV_TIMETAB = "/Applications/SwiftBar/.timetable.csv"
+CSV_TIMETAB = "/Applications/SwiftBar/timetable/.timetable.csv"
 
 
 def to_minutes(time_str):
@@ -43,6 +43,32 @@ class Event:
     
     def spans_midnight(self) -> bool:
         return self.m_start_time > self.m_end_time
+    
+    def minutes_left(self, m_time: int) -> int:
+        if not self.spans_midnight():
+            return event.m_end_time - cur_m_time
+        else:
+            return to_minutes("24:00") - cur_m_time + event.m_end_time
+        
+    def is_ongoing(self, m_time: int) -> bool:
+        if self.spans_midnight():
+            if cur_m_time >= self.m_start_time or cur_m_time < self.m_end_time:
+                return True
+        elif self.m_start_time <= cur_m_time < self.m_end_time:
+            return True
+        return False
+        
+    def time_left(self, time: Union[str, int]) -> str:
+        m_time = time
+        if not isinstance(m_time, int):
+            m_time = to_minutes(m_time)
+            
+        m_left = self.minutes_left(m_time)
+        hr_left = m_left / 60
+        if hr_left >= 1:
+            return f"{hr_left:.1f}h"
+        else:
+            return f"{m_left}m"
 
 
 def load_timetable(csv_file) -> List[Event]:
@@ -57,7 +83,7 @@ def load_timetable(csv_file) -> List[Event]:
     return tab
 
 
-def locate_event(cur_time: str, timetable: List[Event]) -> int:
+def locate_event(cur_time: Union[str, int], timetable: List[Event]) -> int:
     """Locate the current event.
 
     Args:
@@ -66,14 +92,14 @@ def locate_event(cur_time: str, timetable: List[Event]) -> int:
     Returns:
         int: The index of current event. Return -1 if it's not found.
     """
-    # Convert current time to minutes since midnight for easier comparison
-    cur_m_time = to_minutes(cur_time)
+    if not isinstance(cur_time, int): 
+        # Convert current time to minutes since midnight for easier comparison
+        cur_m_time = to_minutes(cur_time)
+    else:
+        cur_m_time = cur_time
     
     for idx, event in enumerate(table):
-        if event.spans_midnight():
-            if cur_m_time >= event.m_start_time or cur_m_time < event.m_end_time:
-                return idx
-        elif event.m_start_time <= cur_m_time < event.m_end_time:
+        if event.is_ongoing(cur_m_time):
             return idx
     if not event_found:
         return -1
@@ -82,10 +108,17 @@ def locate_event(cur_time: str, timetable: List[Event]) -> int:
 if __name__ == "__main__":
     table = load_timetable(CSV_TIMETAB)
     cur_time = datetime.datetime.now().strftime("%H:%M")
+    cur_m_time = to_minutes(cur_time)
     
-    idx_found = locate_event(cur_time, table)
+    idx_found = locate_event(cur_m_time, table)
     event_found = (idx_found != -1)
-    print(table[idx_found] if event_found else "no event")
+    if event_found:
+        event = table[idx_found]
+        # print(f'{event} | dropdown=False')
+        # print(f'{event.time_left(cur_m_time)} left')
+        print(f'{event} ({event.time_left(cur_m_time)} left)')
+    else:
+        print("no event")
     
     print("---")
     for cur_idx, event in enumerate(table):

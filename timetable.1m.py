@@ -5,7 +5,7 @@
 # <xbar.version>v0.1</xbar.version>
 # <xbar.author>Cabin Zhu</xbar.author>
 # <xbar.author.github></xbar.author.github>
-# <xbar.desc>Shows the current event from the daily timetable.</xbar.desc>
+# <xbar.desc>Display the current event from a given daily timetable.</xbar.desc>
 # <xbar.image></xbar.image>
 # <xbar.dependencies>python</xbar.dependencies>
 
@@ -16,6 +16,12 @@ from typing import List
 
 
 # Each line in the format "Begin_Time,End_Time,Event_Name"
+#
+# Example (timetable.csv):
+# 23:30,07:30,sleep
+# 07:30,08:30,breakfast
+# 08:30,10:00,gym
+# ...
 CSV_TIMETAB = "/Applications/SwiftBar/.timetable.csv"
 
 
@@ -85,7 +91,7 @@ if __name__ == "__main__":
     print("---")
     for cur_idx, event in enumerate(table):
         is_cur_event = event_found and idx_found == cur_idx
-        print("{}-{}  {}{} | font=Monaco size=15 color={}".format(
+        print("{}-{} {}{} | font=Monaco size=15 color={}".format(
             event.start_time, event.end_time, event.name,
             " ⬅" if is_cur_event else "",
             "orange" if is_cur_event else "light_color" 

@@ -84,7 +84,9 @@ if __name__ == "__main__":
     
     print("---")
     for cur_idx, event in enumerate(table):
-        print("{:8s} {:8s} {}{}".format(
+        is_cur_event = event_found and idx_found == cur_idx
+        print("{}-{}  {}{} | font=Monaco size=15 color={}".format(
             event.start_time, event.end_time, event.name,
-            " ⬅" if event_found and idx_found == cur_idx else ""
+            " ⬅" if is_cur_event else "",
+            "orange" if is_cur_event else "light_color" 
         ))

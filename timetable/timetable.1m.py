@@ -5,15 +5,14 @@
 # <xbar.version>v0.1</xbar.version>
 # <xbar.author>Cabin Zhu</xbar.author>
 # <xbar.author.github>cabinz</xbar.author.github>
-# <xbar.desc>Display the current event from a given daily timetable.</xbar.desc>
-# <xbar.image></xbar.image>
+# <xbar.desc>Display the current event from a given daily timetable. Make sure to configure the path to your CSV timetable file as the global variable CSV_TIMETAB.</xbar.desc>
+# <xbar.image>https://raw.githubusercontent.com/cabinz/my-xbar-plugins/main/timetable/timetable.png</xbar.image>
 # <xbar.dependencies>python</xbar.dependencies>
 
 import datetime
 import csv
 from dataclasses import dataclass
 from typing import List
-
 
 # Each line in the format "Begin_Time,End_Time,Event_Name"
 #

@@ -111,9 +111,9 @@ if __name__ == "__main__":
     
     print("---")
     for cur_idx, event in enumerate(table):
-        is_cur_event = event_found and idx_found == cur_idx
+        is_ongoing = event.is_ongoing(cur_m_time) # allows multiple ongoing events
         print("{}-{} {}{} | font=Monaco size=15 color={}".format(
             event.start_time, event.end_time, event.name,
-            " ⬅" if is_cur_event else "",
-            "orange" if is_cur_event else "light_color" 
+            " ⬅" if is_ongoing else "",
+            "orange" if is_ongoing else "light_color" 
         ))

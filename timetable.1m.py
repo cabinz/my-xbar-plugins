@@ -12,6 +12,8 @@
 # <xbar.var>string(VAR_TIMETABLE_FILE="/path/to/your/timetable.csv"): An absolute path to a CSV file of the timetable to be displayed.</xbar.var>
 # <xbar.var>boolean(VAR_DISPLAY_EMOJI_WHEN_GIVEN=true): Display in the menu bar the emoji instaad when given.</xbar.var>
 # <xbar.var>boolean(VAR_DISPLAY_TIME_LEFT=true): Display in the menu bar the remaining time of the current event. Otherwise it will be in the pop-up menu.</xbar.var>
+# <xbar.var>string(VAR_FONT='Monaco'): Display font in the pop-up menu.</xbar.var>
+# <xbar.var>number(VAR_FONT_SIZE=15): Display font size in the pop-up menu.</xbar.var>
 
 import datetime
 import csv
@@ -25,6 +27,8 @@ from typing import List
 CSV_TIMETAB = os.environ.get("VAR_TIMETABLE_FILE")
 DISP_EMJ = os.environ.get("VAR_DISPLAY_EMOJI_WHEN_GIVEN", 'true') == 'true'
 DISP_TIME_LEFT = os.environ.get("VAR_DISPLAY_TIME_LEFT", 'true') == 'true'
+FONT = os.environ.get("VAR_FONT", 'Monaco')
+FONT_SIZ = int(os.environ.get("VAR_FONT_SIZE", '15'))
 
 RGB_LIGHT_GREY = "#848481" 
 RGB_ORANGE = "#F2980B"
@@ -158,15 +162,15 @@ if __name__ == "__main__":
     print("---")
     for cur_idx, event in enumerate(table):
         if event.is_ongoing(cur_m_time): # allows multiple ongoing events
-            print("{}-{}  {} {} {}| font=Monaco size=15 color={}".format(
+            print("{}-{}  {} {} {}| font={} size={} color={}".format(
                 event.start_time, event.end_time, 
                 event.name, 
                 get_time_left_str(event.minutes_left(cur_m_time)) if not DISP_TIME_LEFT else "",
                 event.emoji if event.emoji else "⬅",
-                RGB_ORANGE
+                FONT, FONT_SIZ, RGB_ORANGE
             ))
         else:
-            print("{}-{}  {}| font=Monaco size=15 color={}".format(
+            print("{}-{}  {}| font={} size={} color={}".format(
                 event.start_time, event.end_time, event.name, 
-                RGB_LIGHT_GREY
+                FONT, FONT_SIZ, RGB_LIGHT_GREY
             ))

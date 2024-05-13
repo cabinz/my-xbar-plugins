@@ -112,10 +112,11 @@ if __name__ == "__main__":
         print("no event")
     
     print("---")
+    RGB_LIGHT_GREY = "#848481" 
     for cur_idx, event in enumerate(table):
         is_ongoing = event.is_ongoing(cur_m_time) # allows multiple ongoing events
         print("{}-{} {}{} | font=Monaco size=15 color={}".format(
             event.start_time, event.end_time, event.name,
             " ⬅" if is_ongoing else "",
-            "orange" if is_ongoing else "light_color" 
+            "orange" if is_ongoing else RGB_LIGHT_GREY
         ))

@@ -5,23 +5,18 @@
 # <xbar.version>v1.0</xbar.version>
 # <xbar.author>Cabin Zhu</xbar.author>
 # <xbar.author.github>cabinz</xbar.author.github>
-# <xbar.desc>Display the current event from a given daily timetable. Make sure to configure the path to your CSV timetable file as the global variable CSV_TIMETAB.</xbar.desc>
+# <xbar.desc>Display the current event from a given daily timetable. To make it work, make sure to configure the path to your CSV timetable file, where each line is in the format of <Begin_Time,End_Time,Event_Name></xbar.desc>
 # <xbar.image>https://raw.githubusercontent.com/cabinz/my-xbar-plugins/main/timetable/timetable.png</xbar.image>
 # <xbar.dependencies>python</xbar.dependencies>
+# <xbar.var>string(VAR_TIMETABLE_FILE="/path/to/your/timetable.csv"): An absolute path to a CSV file of the timetable to be displayed.</xbar.var>
 
 import datetime
 import csv
-from dataclasses import dataclass
-from typing import List, Union
+import os
+from typing import List
 
-# Each line in the format "Begin_Time,End_Time,Event_Name"
-#
-# Example (timetable.csv):
-# 23:30,07:30,sleep
-# 07:30,08:30,breakfast
-# 08:30,10:00,gym
-# ...
-CSV_TIMETAB = "/Applications/SwiftBar/timetable/.timetable.csv"
+
+CSV_TIMETAB = os.environ.get("VAR_TIMETABLE_FILE")
 
 
 def to_m_time(time: str):

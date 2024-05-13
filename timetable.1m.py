@@ -2,11 +2,12 @@
 
 # xbar meta
 # <xbar.title>Timetable</xbar.title>
-# <xbar.version>v1.0</xbar.version>
+# <xbar.version>v1.1</xbar.version>
 # <xbar.author>Cabin Zhu</xbar.author>
 # <xbar.author.github>cabinz</xbar.author.github>
-# <xbar.desc>Display the current event from a given daily timetable. To make it work, make sure to configure the path to your CSV timetable file, where each line is in the format of <Begin_Time,End_Time,Event_Name></xbar.desc>
-# <xbar.image>https://raw.githubusercontent.com/cabinz/my-xbar-plugins/main/timetable/timetable.png</xbar.image>
+# <xbar.desc>Display the current event from a given daily timetable. To make it work, make sure to configure the path to your CSV timetable file. More about the user manual, see project page https://github.com/cabinz/xbar-timetable.</xbar.desc>
+# <xbar.image>https://raw.githubusercontent.com/cabinz/xbar-timetable/main/docs/timetable.png</xbar.image>
+# <xbar.abouturl>https://github.com/cabinz/xbar-timetable</xbar.abouturl>
 # <xbar.dependencies>python</xbar.dependencies>
 # <xbar.var>string(VAR_TIMETABLE_FILE="/path/to/your/timetable.csv"): An absolute path to a CSV file of the timetable to be displayed.</xbar.var>
 

@@ -72,6 +72,10 @@ class Event:
 
 
 def load_timetable(csv_file) -> List[Event]:
+    if csv_file is None or not os.path.exists(csv_file):
+        raise ValueError(
+            f'The current timetable file path "{csv_file}" is invalid. Please re-configure the path to your CSV file in xbar. If you are a user from SwiftBar or other plug-in software that does not support user-configurable variables, you could modify the script to hard-code the path yourself as the CSV_TIMETAB variable.')
+    
     tab = []
     with open(csv_file, newline='') as file:
         reader = csv.reader(file)

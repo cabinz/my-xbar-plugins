@@ -111,8 +111,8 @@ def load_timetable(csv_file) -> List[Event]:
         for idx, ln in enumerate(reader):
             if len(ln) not in (3, 4):
                 exit_with_error(
-                    'Each line of the CSV file needs to have 3 or 4 columns,'
-                    f'but line {idx} of the given file has {len(ln)} columns.')
+                    'Each line of the CSV file needs to have 3 or 4 columns,\n'
+                    f'but line:{idx} (start from 0) in the given file has {len(ln)} columns.')
             if len(ln) == 3:
                 ln.append(None)
             elif ln[3] == '':
@@ -160,12 +160,16 @@ if __name__ == "__main__":
         print("no event")
     
     print("---")
+    if idx_found != -1 and not DISP_TIME_LEFT:
+        print('{} | font={} size={} color={}'.format(
+            get_time_left_str(event.minutes_left(cur_m_time)),
+            FONT, FONT_SIZ, RGB_ORANGE
+        ))
     for cur_idx, event in enumerate(table):
         if event.is_ongoing(cur_m_time): # allows multiple ongoing events
-            print("{}-{}  {} {} {}| font={} size={} color={}".format(
+            print("{}-{}  {} {}| font={} size={} color={}".format(
                 event.start_time, event.end_time, 
                 event.name, 
-                get_time_left_str(event.minutes_left(cur_m_time)) if not DISP_TIME_LEFT else "",
                 event.emoji if event.emoji else "⬅",
                 FONT, FONT_SIZ, RGB_ORANGE
             ))

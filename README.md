@@ -1,4 +1,4 @@
-Timetable a plugin for [xbar](https://github.com/matryer/xbar) to quickly show in your macOS menu bar the current event of your daily timetable. Your full timetable will also be displayed in the popped-up menu.
+Timetable a plugin for [xbar](https://github.com/matryer/xbar) to quickly show in your macOS menu bar the current event of your daily timetable. Your full timetable will also be displayed in the pop-up menu.
 
 ![Timetable plugin in action](docs/timetable.png)
 
@@ -28,29 +28,20 @@ ln -s path/to/timetable.1m.py timetable.1m.py
 ## Customize Your Timetable
 Your timetable should be made as a CSV file, where each line is in the format of 
 ```
-<Begin Time>,<End Time>,<Event Name>
+<Begin Time>,<End Time>,<Event Name>,[<Event Emoji>]
 ```
-
-For example:
-
+The column of emoji is optional, i.e. each line of the following CSV text are valid:
 ```CSV
-23:30,07:30,sleep
-07:30,08:30,breakfast
+23:30,07:30,sleep,😴
+07:30,08:30,breakfast,
 08:30,10:00,gym
-10:00,12:00,paper
-12:00,12:30,lunch
-12:30,14:30,work
-14:30,15:00,coffee
-15:00,18:00,work
-18:00,18:30,shopping
-18:30,19:30,dinner
-19:30,22:30,work
-22:30,23:00,bath
-23:00,23:30,reading
 ```
+As default, the emoji will be displayed in the menu bar if given. For more examples of CSV sheets, see [examples](examples/).
 
 The path to the CSV file needs to be configured in the xbar panel:
 ![configure xbar variables](docs/configuration.png)
+
+Besides the file path, there are several more customizable variables could be configured in the panel, including font, font size and emoji / remaining time display.
 
 Refresh the xbar plugin (by clicking the top-left button) to make the configuration work!
 

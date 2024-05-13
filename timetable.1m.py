@@ -2,7 +2,7 @@
 
 # xbar meta
 # <xbar.title>Timetable</xbar.title>
-# <xbar.version>v1.1</xbar.version>
+# <xbar.version>v2.0</xbar.version>
 # <xbar.author>Cabin Zhu</xbar.author>
 # <xbar.author.github>cabinz</xbar.author.github>
 # <xbar.desc>Display the current event from a given daily timetable. To make it work, make sure to configure the path to your CSV timetable file. More about the user manual, see project page https://github.com/cabinz/xbar-timetable.</xbar.desc>
@@ -10,6 +10,7 @@
 # <xbar.abouturl>https://github.com/cabinz/xbar-timetable</xbar.abouturl>
 # <xbar.dependencies>python</xbar.dependencies>
 # <xbar.var>string(VAR_TIMETABLE_FILE="/path/to/your/timetable.csv"): An absolute path to a CSV file of the timetable to be displayed.</xbar.var>
+# <xbar.var>boolean(VAR_DISPLAY_EMOJI_WHEN_GIVEN=true): Display the emoji instaad in the menu bar when given.</xbar.var>
 
 import datetime
 import csv
@@ -21,6 +22,7 @@ from typing import List
 # If you are on SwiftBar or other platforms w/o user-configurable variables,
 # manually change the assignment as a string of absolute path to your timetable CSV file.
 CSV_TIMETAB = os.environ.get("VAR_TIMETABLE_FILE")
+DISP_EMJ = os.environ.get("VAR_DISPLAY_EMOJI_WHEN_GIVEN", 'true') == 'true'
 
 RGB_LIGHT_GREY = "#848481" 
 RGB_ORANGE = "#F2980B"
@@ -38,16 +40,27 @@ def to_timestamp(m_time: int):
     return f"{hr:02d}:{minute:02d}"
 
 
+def exit_with_error(err_msg: str):
+    print('⚠️Error')
+    print('---')
+    print(err_msg)
+    sys.exit()
+
+
 class Event:
-    def __init__(self, start_timestamp: str, end_timestamp: str, name: str) -> None:
+    def __init__(self, start_timestamp: str, end_timestamp: str, name: str, 
+                 emoji: str = None) -> None:
         self.start_time = start_timestamp
         self.end_time = end_timestamp
         self.m_start_time = to_m_time(start_timestamp)
         self.m_end_time = to_m_time(end_timestamp)
         self.name = name
+        self.emoji = emoji
     
     def __repr__(self) -> str:
-        return self.name
+        return "{}{}".format(
+            self.name, 
+            self.emoji if self.emoji else '')
     
     def spans_midnight(self) -> bool:
         return self.m_start_time > self.m_end_time
@@ -79,20 +92,36 @@ class Event:
 
 
 def load_timetable(csv_file) -> List[Event]:
+    """Load timetable from CSV file as a list of Events.
+    
+    Each line of the CSV file is in the format of
+    ```
+    <start_time>,<end_time>,<event_name>[,<event_emoji>]
+    ```    
+    The event emoji column is optional.
+    """
     if csv_file is None or not os.path.exists(csv_file):
-        print('⚠️Error')
-        print('---')
-        print(f'Invalid timetable file path: {csv_file}\n'
-              'Please configure the absolute path to your CSV file in xbar.\n'
-              'If you are on SwiftBar or other platforms w/o user-configurable variables,\n'
-              'modify the plugin script yourself to specify the path as the variable CSV_TIMETAB.')
-        sys.exit()
+        exit_with_error(
+            f'Invalid timetable file path: {csv_file}\n'
+            'Please configure the absolute path to your CSV file in xbar.\n'
+            'If you are on SwiftBar or other platforms w/o user-configurable variables,\n'
+            'modify the plugin script yourself to specify the path as the variable CSV_TIMETAB.')
     
     tab = []
     with open(csv_file, newline='') as file:
         reader = csv.reader(file)
-        for idx, (start_time, end_time, event_name) in enumerate(reader):
-            tab.append(Event(start_time, end_time, event_name))
+        for idx, ln in enumerate(reader):
+            if len(ln) not in (3, 4):
+                exit_with_error(
+                    'Each line of the CSV file needs to have 3 or 4 columns,'
+                    f'but line {idx} of the given file has {len(ln)} columns.')
+            if len(ln) == 3:
+                ln.append(None)
+            elif ln[3] == '':
+                ln[3] = None
+                
+            start_time, end_time, event_name, event_emoji = ln
+            tab.append(Event(start_time, end_time, event_name, emoji=event_emoji))
     return tab
 
 
@@ -116,15 +145,19 @@ if __name__ == "__main__":
     idx_found = locate_event(cur_m_time, table)
     if idx_found != -1: # display the first-hit ongoing event as title
         event = table[idx_found]
-        print(f'{event} ({event.time_left(cur_m_time)} left)')
+        print('{} ({} left)'.format(
+            event.emoji if DISP_EMJ and event.emoji else event.name,
+            event.time_left(cur_m_time)
+        ))
     else:
         print("no event")
     
     print("---")
     for cur_idx, event in enumerate(table):
         is_ongoing = event.is_ongoing(cur_m_time) # allows multiple ongoing events
-        print("{}-{} {}{} | font=Monaco size=15 color={}".format(
-            event.start_time, event.end_time, event.name,
-            " ⬅" if is_ongoing else "",
+        print("{}-{}  {} {} | font=Monaco size=15 color={}".format(
+            event.start_time, event.end_time, 
+            event.name, 
+            (event.emoji if event.emoji else "⬅") if is_ongoing else '',
             RGB_ORANGE if is_ongoing else RGB_LIGHT_GREY
         ))

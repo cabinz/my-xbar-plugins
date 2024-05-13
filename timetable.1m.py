@@ -14,10 +14,16 @@
 import datetime
 import csv
 import os
+import sys
 from typing import List
 
 
+# If you are on SwiftBar or other platforms w/o user-configurable variables,
+# manually change the assignment as a string of absolute path to your timetable CSV file.
 CSV_TIMETAB = os.environ.get("VAR_TIMETABLE_FILE")
+
+RGB_LIGHT_GREY = "#848481" 
+RGB_ORANGE = "#F2980B"
 
 
 def to_m_time(time: str):
@@ -74,8 +80,13 @@ class Event:
 
 def load_timetable(csv_file) -> List[Event]:
     if csv_file is None or not os.path.exists(csv_file):
-        raise ValueError(
-            f'The current timetable file path "{csv_file}" is invalid. Please re-configure the path to your CSV file in xbar. If you are a user from SwiftBar or other plug-in software that does not support user-configurable variables, you could modify the script to hard-code the path yourself as the CSV_TIMETAB variable.')
+        print('⚠️Error')
+        print('---')
+        print(f'Invalid timetable file path: {csv_file}\n'
+              'Please configure the absolute path to your CSV file in xbar.\n'
+              'If you are on SwiftBar or other platforms w/o user-configurable variables,\n'
+              'modify the plugin script yourself to specify the path as the variable CSV_TIMETAB.')
+        sys.exit()
     
     tab = []
     with open(csv_file, newline='') as file:
@@ -106,17 +117,14 @@ if __name__ == "__main__":
     if idx_found != -1: # display the first-hit ongoing event as title
         event = table[idx_found]
         print(f'{event} ({event.time_left(cur_m_time)} left)')
-        # print(f'{event} | dropdown=False')
-        # print(f'{event.time_left(cur_m_time)} left')
     else:
         print("no event")
     
     print("---")
-    RGB_LIGHT_GREY = "#848481" 
     for cur_idx, event in enumerate(table):
         is_ongoing = event.is_ongoing(cur_m_time) # allows multiple ongoing events
         print("{}-{} {}{} | font=Monaco size=15 color={}".format(
             event.start_time, event.end_time, event.name,
             " ⬅" if is_ongoing else "",
-            "orange" if is_ongoing else RGB_LIGHT_GREY
+            RGB_ORANGE if is_ongoing else RGB_LIGHT_GREY
         ))

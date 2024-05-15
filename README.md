@@ -10,11 +10,13 @@ Timetable a plugin for [xbar](https://github.com/matryer/xbar) to quickly show i
 
 ## Install Timetable Plugin
 
-Timetable is now available on the xbar plugin browser to be directly installed.
-
-Or, you could install Timetable from source, by cloning this repo, and copying the script to xbar plugin folder:
+Clone this repo:
 ```shell
 git clone https://github.com/cabinz/xbar-timetable
+```
+
+Copy the script from local repo to xbar plugin folder:
+```shell
 cp xbar-timetable/timetable.1m.py ~/Library/Application\ Support/xbar/plugins
 ```
 
@@ -26,11 +28,11 @@ ln -s path/to/timetable.1m.py timetable.1m.py
 ```
 
 ## Customize Your Timetable
-Your timetable should be made as a CSV file, where each line is in the format of 
+Your timetable should be made as a CSV file in the line format of 
 ```
 <Begin Time>,<End Time>,<Event Name>,[<Event Emoji>]
 ```
-The column of emoji is optional, i.e. each line of the following CSV text are valid:
+The column of emoji is optional, i.e. each line of the following CSV text is valid:
 ```CSV
 23:30,07:30,sleep,😴
 07:30,08:30,breakfast,
